@@ -1,36 +1,63 @@
 import os
 import csv
-budget_csv= os.path.join('..','Resources','budget_data.csv.')
+monthsCount=0
+netTotal=0
+previousAmount=0
+changeTotal=0
+greatestIncrease=0
+greatestDecrease=0
+greatesIncreaseDate=""
+greatestDecreaseDate=""
+
+budget_csv= os.path.join('Resources','budget_data.csv.')
+outfile=os.path.join("Analysis","data_output.csv")
+
 with open(budget_csv) as csv_file:
-    csv_reader= csv.reader(csvfile,delimeter=",")
+    csv_reader= csv.reader(csv_file)
+    header=csv_file.readline()
+    rows=csv.reader(csv_file)
+
+    changeCount=0
+    change=0
     for row in csv_reader:
-        print(row)
-        exit()
+        # print(row)
+        
 
-        date.count(row[0])
-        amount.sum(row[1])
-        sum_total=sum(row[1])
+        monthsCount=monthsCount+1
+        currentAmount=int(row[1])
+        netTotal= netTotal + currentAmount
 
-MonthsCount=len(data)
+        if previousAmount != 0:
+            change= currentAmount-previousAmount
+            changeTotal=changeTotal+change
+    
+            changeCount=changeCount+1
+            # print(change)
+            # exit()
+        previousAmount=currentAmount
+  
+        if change > greatestIncrease:
+            greatestIncrease=change
+            greatestIncreaseDate=row[0]
 
-increase=amount[0]
-decrease=amount[0]
+        if change < greatestDecrease:
+            greatestDecrease=change
+            greatestDecreaseDate=row[0]
+        
 
-for value in range(len(amount)):
-    if amount[value] >=increase:
-        increase=amount[value]
-        increase_month=date[value]
-    elif amount[value]<=decrease:
-        decrease=amount[value]
-        decrease_month=amount[value]
-avg_change=(sum_total/MonthsCount)
 
-print("Financial Analysis")
-print("----------------------------")
-print("Total Months:",MonthsCount)
-print("Total:",sum_total)
-print("Average Change:",avg_change)
-print("Greatest Increase in Profits:", increase_month)
-print("Greatest Decrease in Profits:",decrease_month)
+output=f"""
+Financial Analysis
+----------------------------
+Total Months: {monthsCount}
+Total: ${netTotal}
+Average  Change: ${changeTotal/changeCount:.2f}
+Greatest Increase in Profits: {greatestIncreaseDate} ${greatestIncrease}
+Greatest Decrease in Profits: {greatestDecreaseDate} ${greatestDecrease}
+"""
+print(output)
+
+with open(outfile,'w')as output_data:
+    output_data.write(output)
 
 
